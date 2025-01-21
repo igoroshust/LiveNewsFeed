@@ -7,7 +7,7 @@ import { publicRoutes, privateRoutes } from "../../router/routes";
 import { AuthContext } from "../../context/context";
 
 
-const AppRouter = () => {
+const AppRouter = ({ posts }) => {
 
     const {isAuth, isLoading} = useContext(AuthContext); // храним информацию, авторизован пользователь, или нет.
 
@@ -20,7 +20,7 @@ const AppRouter = () => {
               <Routes>
                     {privateRoutes.map(route =>
                         <Route
-                             element={<route.component />}
+                             element={<route.component posts={posts}/>}
                              path={route.path}
                              exact={route.exact}
                              key={route.path}
@@ -32,7 +32,7 @@ const AppRouter = () => {
                <Routes>
                     {publicRoutes.map(route =>
                         <Route
-                             element={<route.component />}
+                             element={<route.component posts={posts}/>}
                              path={route.path}
                              exact={route.exact}
                              key={route.path}

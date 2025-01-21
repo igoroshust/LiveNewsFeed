@@ -31,6 +31,8 @@ function App() {
     /* Состояние для запроса на сервер (чтобы при обновлении страницы posts/id не вылетало) */
     const [isLoading, setLoading] = useState(true);
 
+    const [posts, setPosts] = useState([]);
+
     /* Сохраняем, авторизован пользователь, или нет */
     useEffect(() => {
         if(localStorage.getItem('auth')) {
@@ -47,7 +49,7 @@ function App() {
         }} >
          <BrowserRouter>
            <Navbar />
-           <AppRouter />
+           <AppRouter posts={posts} setPosts={setPosts}/>
         </BrowserRouter>
        </AuthContext.Provider>
     );

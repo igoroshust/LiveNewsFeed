@@ -12,8 +12,12 @@ const PostForm = ({ create }) => {
         e.preventDefault() // предотвращаем дефолтное поведение бразура (submit у формы)
 
         const newPost = {
-            ...post, id: Date.now()
-        }
+            id: Date.now(),
+            title: post.title,
+            body: post.body
+        };
+
+        console.log('Созданный пост:', newPost); // Отладка
 
         /* Передаём новый пост в crate */
         create(newPost)

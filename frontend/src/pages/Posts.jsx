@@ -68,12 +68,18 @@ function Posts() {
     }, []);
 
     const createPost = (newPost) => {
+        console.log('Созданный пост:', newPost); // Отладка
+
+        // Отправляем новый пост через WebSocket
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             socketRef.current.send(JSON.stringify(newPost));
         } else {
             console.error('WebSocket is not open. Cannot send message.');
         }
-        setModal(false);
+
+        // Добавляем новый пост в состояние
+        setPosts((prevPosts) => [...prevPosts, newPost]); // добавляем новый пост в массив
+        setModal(false); // закрываем модальное окно
     };
 
     const removePost = (post) => {

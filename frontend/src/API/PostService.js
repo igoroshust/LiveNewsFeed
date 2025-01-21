@@ -14,11 +14,11 @@ export default class PostService {
     static async getById(id) { // указываем параметры для ответа
         console.log(`Fetching post with ID: ${id}`); // Отладочный вывод
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts/' + id)
-            return response;
+            return response.data; // Возвращаем данные поста
     }
 
     static async getCommentsByPostId(id) {
         const response = await axios.get('https://jsonplaceholder.typicode.com/posts/' + id + '/comments')
-        return response;
+        return response.data;
     }
 }
