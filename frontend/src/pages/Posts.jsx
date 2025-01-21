@@ -54,6 +54,9 @@ function Posts() {
     /* Ссылка на DOM-элемент, последний в списке */
     const lastElement = useRef() // когда элемент в зоне видимости бразура, подгружаем новую порцию данных
 
+        /* Ссылка на WebSocket */
+    const socketRef = useRef(null);
+
     useObserver(lastElement, page < totalPages, isPostsLoading, () => {
         setPage(page + 1);
     });
@@ -63,11 +66,35 @@ function Posts() {
         fetchPosts(limit, page)
     }, [page, limit]) // массив зависимостей пустой, чтобы функция отработала лишь единожды
 
-   /* Создание поста. Вход - новый созданный пост из PostForm. Затем изменяем состояние */
-   const createPost = (newPost) => {
-        setPosts([newPost, ...posts]) // разворачиваем старый массив, в начало добавляя новый пост
-        setModal(false) // скрываем модальное окно после создания поста
-   }
+
+    /* Подключаем WebSocket-соединение */
+    useEffect(() => {
+        socketRef.current = new WebSocket('ws://localhost:7000/ws');
+
+        socketRef.current.onmessage = (event) => {
+            const newsItem = JSON.parse(event.data);
+            setPosts((prevPosts) => [newsItem, ...prevPosts]);
+        };
+
+        socketRef.current.onclose = () => {
+            console.log('WebSocket-соединение закрыто.');
+        };
+
+        return () => {
+            socketRef.current.close(); // Закрываем соединение при размонтировании
+        };
+    }, []);
+
+    /* Создание поста. Вход - новый созданный пост из PostForm. Затем изменяем состояние */
+    const createPost = (newPost) => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(JSON.stringify(newPost)); // Отправляем новый пост на сервер
+        } else {
+            console.error('WebSocket is not open. Cannot send message.');
+        }
+        setPosts([newPost, ...posts]); // Добавляем новый пост в состояние
+        setModal(false); // Скрываем модальное окно после создания поста
+    };
 
    /* Удаление постов. Получаем post из дочернего компонента */
    const removePost = (post) => { // из массива постов необходимо удалить тот, который мы передали аргументом.
