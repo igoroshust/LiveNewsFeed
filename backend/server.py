@@ -15,6 +15,9 @@ async def websocket_handler(request):
     print('Клиент подключился')
     connected_clients.add(ws)
 
+    # Отправляем все существующие пользовательские посты при подключении
+    await ws.send_json(user_posts)
+
     try:
         while True:
             msg = await ws.receive()
