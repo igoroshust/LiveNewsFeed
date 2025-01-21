@@ -45,9 +45,15 @@ function Posts() {
 
         socketRef.current.onmessage = (event) => {
             const message = JSON.parse(event.data);
+
+            // Проверяем, является ли сообщение массивом (это существующие посты)
             if (Array.isArray(message)) {
                 setPosts(message);
+            } else if (message.action === 'remove') {
+                // Если это сообщение о удалении, удаляем пост из состояния
+                setPosts((prevPosts) => prevPosts.filter(p => p.id !== message.postId));
             } else {
+                // Если это новый пост, добавляем его
                 setPosts((prevPosts) => [message, ...prevPosts]);
             }
         };
@@ -71,6 +77,14 @@ function Posts() {
     };
 
     const removePost = (post) => {
+        // Отправляем сообщение на сервер через WebSocket для удаления поста
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(JSON.stringify({ action: 'remove', postId: post.id }));
+        } else {
+            console.error('WebSocket is not open. Cannot send message.');
+        }
+
+        // Обновляем состояние, удаляя пост из локального состояния
         setPosts(posts.filter(p => p.id !== post.id));
     };
 
