@@ -90,3 +90,12 @@
 .navbar__links {
     margin-left: auto; /* располагаем ссылки на странцы в правом углу*/
 }
+
+.navbar__links a {
+    color: teal;
+    text-decoration: none;
+}
+
+.navbar__links a:nth-child(1) {
+    margin-right: 20px;
+}

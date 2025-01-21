@@ -65,7 +65,7 @@ function Posts() {
 
    /* Создание поста. Вход - новый созданный пост из PostForm. Затем изменяем состояние */
    const createPost = (newPost) => {
-        setPosts([...posts, newPost]) // разворачиваем старый массив, в конец добавляя новый пост
+        setPosts([newPost, ...posts]) // разворачиваем старый массив, в начало добавляя новый пост
         setModal(false) // скрываем модальное окно после создания поста
    }
 
@@ -96,9 +96,9 @@ function Posts() {
   return (
         <div className="App">
             <div className="content">
-                <button onClick={fetchPosts}>
-                    GET POSTS
-                </button>
+{/*                 <button onClick={fetchPosts}> */}
+{/*                     GET POSTS */}
+{/*                 </button> */}
 
                 <MyButton onClick={() => setModal(true)}>
                     Создать пост
